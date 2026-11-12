@@ -34,6 +34,8 @@ class VigenereCipher:
         str
             The shifted letter.
         """
+        #Shift the number to the right or left depedning on the forward value
+        #Using the modulus it loops the letters round in circles
         if forward:
             shifted_letter = chr((ord(letter) - self.offset + shift) % 26 + self.offset)
         else:
@@ -64,7 +66,9 @@ class VigenereCipher:
         """
         shift_list = []
 
+        #Loops through the letters in the plaintext length
         for i in range(plaintext_length):
+            #Then assign the value to the current letter whilst looping through the word given as the keyword
             letter = self.keyword[i % len(self.keyword)]
             shift = ord(letter) - self.offset
             shift_list.append(shift)
@@ -94,10 +98,15 @@ class VigenereCipher:
         """
         ciphertext = ''
 
+        #Joins all the plain text together
+
         plaintext = ''.join(char for char in plaintext.upper() if char.isalpha())
+
+        #Makes the shift list for the cipher
 
         shift_list = self.__generate_shift_list(len(plaintext))
 
+        #Goes through all the letters and encrypts it with the formula
         for i in range(len(plaintext)):
             ciphertext += self.__shift_letter(plaintext[i], shift_list[i], True)
         
@@ -129,10 +138,13 @@ class VigenereCipher:
         """
         plaintext = ''
 
+        #Joins all the chracters together
         ciphertext = ''.join(char for char in ciphertext.upper() if char.isalpha())
 
+        #Generates the shift list with the cipher
         shift_list = self.__generate_shift_list(len(ciphertext))
 
+        #loops through and decrypts the message
         for i in range(len(ciphertext)):
             plaintext+= self.__shift_letter(ciphertext[i], shift_list[i], False)
         
