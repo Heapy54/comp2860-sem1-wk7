@@ -34,7 +34,11 @@ class VigenereCipher:
         str
             The shifted letter.
         """
-        shifted_letter = ''
+        if forward:
+            shifted_letter = chr((ord(letter) - self.offset + shift) % 26 + self.offset)
+        else:
+            shifted_letter = chr((ord(letter) - self.offset - shift) % 26 + self.offset)
+
         return shifted_letter
 
     def __generate_shift_list(self, plaintext_length: int):
@@ -59,6 +63,12 @@ class VigenereCipher:
             A list of shifts (integers).
         """
         shift_list = []
+
+        for i in range(plaintext_length):
+            letter = self.keyword[i % len(self.keyword)]
+            shift = ord(letter) - self.offset
+            shift_list.append(shift)
+
         return shift_list
 
     def encrypt(self, plaintext: str):
@@ -83,6 +93,14 @@ class VigenereCipher:
             The ciphertext string.
         """
         ciphertext = ''
+
+        plaintext = ''.join(char for char in plaintext.upper() if char.isalpha())
+
+        shift_list = self.__generate_shift_list(len(plaintext))
+
+        for i in range(len(plaintext)):
+            ciphertext += self.__shift_letter(plaintext[i], shift_list[i], True)
+        
         return ciphertext
 
     def decrypt(self, ciphertext: str):
@@ -110,6 +128,14 @@ class VigenereCipher:
             The plaintext string.
         """
         plaintext = ''
+
+        ciphertext = ''.join(char for char in ciphertext.upper() if char.isalpha())
+
+        shift_list = self.__generate_shift_list(len(ciphertext))
+
+        for i in range(len(ciphertext)):
+            plaintext+= self.__shift_letter(ciphertext[i], shift_list[i], False)
+        
         return plaintext
 
 
